@@ -18,8 +18,6 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("org.hibernate.orm:hibernate-core:6.1.5.Final")
     implementation("com.mysql:mysql-connector-j:8.0.31")
-    // https://mvnrepository.com/artifact/com.h2database/h2
-    implementation("com.h2database:h2:2.1.214")
 
 }
 

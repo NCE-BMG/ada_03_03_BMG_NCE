@@ -1,7 +1,10 @@
 import jakarta.persistence.*
 @Entity
 @Table(name="talleres")
-class Taller (
+class Taller(
+    @Id
+    @Column(name = "cif")
+    var cif: String ,
 
     @Column(name = "nombre")
     var nombre: String,
@@ -10,12 +13,9 @@ class Taller (
     @JoinColumn(name = "id_direccion")
     var direccion: Direccion,
 
-    @Id
-    @Column(name = "cif")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var cif: Int?=null,
 
     @ManyToMany(mappedBy = "talleres")
     var clientes: Set<Cliente>? = null,
     ) {
+    override  fun toString():String ="Taller con cif: $cif, y nombre: $nombre"
     }

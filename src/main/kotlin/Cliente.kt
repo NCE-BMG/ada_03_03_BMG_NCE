@@ -13,12 +13,12 @@ class Cliente(
     @Column(name="email")
     var email:String,
 
-    @Column(name = "edad")
-    var edad: Short,
+    @Column(name = "contrasenya")
+    var contrasenya:String,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "id_direccion")
-    var direccion: Direccion,
+    var direccion: Direccion?,
 
     @ManyToMany
     @JoinTable(
@@ -28,4 +28,7 @@ class Cliente(
     )
     var talleres: Set<Taller>? = null,
 ) {
+    override fun toString(): String {
+        return "Cliente con dni: $dni, nombre: $nombre, email: $email y direccion: $direccion "
+    }
 }

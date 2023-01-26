@@ -22,4 +22,8 @@ class Pedido (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?=null
         ) {
+    override fun toString(): String {
+        if (taller==null) return "Pedido sin taller del cliente: ${cliente?.nombre} con la siguiente descripcion: $descripcion"
+        else return "Pedido del cliente: ${cliente?.nombre}, en el taller ${taller!!.nombre} con la siguiente descripcion: $descripcion"
+    }
 }

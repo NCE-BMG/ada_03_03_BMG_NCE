@@ -20,10 +20,10 @@ class Gui {
             coder.encriptarContrasenya("123123"),
             null
         )
+        gestor.insertTaller(taller)
         gestor.insertCliente(clientepr)
         gestor.insertCliente(clientepr2)
 
-        gestor.insertTaller(taller)
         val pedido = Pedido(null, clientepr, "mantecado")
         gestor.insertPedido(pedido)
 
@@ -258,9 +258,8 @@ class Gui {
 
     private fun showWorkshops(dni: String) {
         try {
-            val tallers = gestor.talleresCliente(dni)
             println("Tu lista de Talleres: ")
-            tallers.forEach { println(it.nombre) }
+            gestor.talleresCliente(dni)?.forEach { println(it.nombre) }
         } catch (e: Exception) {
             println("Tu lista de Talleres esta vacia. :C")
         }
@@ -294,9 +293,11 @@ class Gui {
         println("Su lista de clientes asociados: ")
         try {
             val pedidosAs = gestor.clientesAsociados(cif)
-            pedidosAs.forEach { println(it) }
-            if (pedidosAs.isEmpty()) {
-                println("Su lista de clientes esta vacia :C")
+            pedidosAs?.forEach { println(it) }
+            if (pedidosAs != null) {
+                if (pedidosAs.isEmpty()) {
+                    println("Su lista de clientes esta vacia :C")
+                }
             }
         } catch (e: Exception) {
             println("Su lista de clientes esta vacia :C")

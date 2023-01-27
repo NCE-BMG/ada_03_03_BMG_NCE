@@ -26,7 +26,7 @@ class Cliente(
         joinColumns = [JoinColumn(name = "dni")],
         inverseJoinColumns = [JoinColumn(name = "cif")]
     )
-    var talleres: Set<Taller>? = null,
+    var talleres: MutableSet<Taller>? = null,
 ) {
     override fun toString(): String {
         return "Cliente con dni: $dni, nombre: $nombre, email: $email y direccion: $direccion "

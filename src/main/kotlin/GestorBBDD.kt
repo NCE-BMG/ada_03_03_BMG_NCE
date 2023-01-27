@@ -40,7 +40,8 @@ class GestorBBDD {
     }
     fun selectAllClientes():List<Cliente> = manager.createQuery("from Cliente")?.resultList as List<Cliente>
     fun selectClienteByDni(dni: String):Cliente = manager.createQuery("from Cliente where dni=dni")?.singleResult as Cliente
-    fun selectAllTalleres():List<Taller> = manager.createQuery("from Talleres")?.resultList as List<Taller>
+    fun selectTallerByCIF(cif: String):Taller = manager.createQuery("from Taller where cif=cif")?.singleResult as Taller
+    fun selectAllTalleres():List<Taller> = manager.createQuery("from Taller")?.resultList as List<Taller>
     fun selectAllPedidos(): List<Pedido>? = manager.createQuery("from Pedido")?.resultList as List<Pedido>?
     fun selectAllPedidosSinTaller(): List<Pedido>? = manager.createQuery("from Pedido where taller=null")?.resultList as List<Pedido>
     fun pedidosAsociados(cif: String): MutableList<Pedido> {
@@ -89,5 +90,6 @@ class GestorBBDD {
     }
 
     fun close()=manager.close()
+    fun isOpne() = manager.isOpen
 
 }

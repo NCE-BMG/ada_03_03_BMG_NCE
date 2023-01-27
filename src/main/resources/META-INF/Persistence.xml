@@ -7,8 +7,8 @@
 
     <persistence-unit name="PersistenciaCliente">
         <class>Cliente</class>
-        <class>Taller</class>
         <class>Direccion</class>
+        <class>Taller</class>
         <class>Pedido</class>
 
         <properties>

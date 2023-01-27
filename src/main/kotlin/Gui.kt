@@ -3,12 +3,28 @@ class Gui {
     private val coder = EncriptacionContraseña
     fun init() {
         //PRUEBAS
-        var taller = Taller("123123", "xd", Direccion("s", 1, 1, "d"))
-        val clientepr = Cliente("x123123", "Naim", "naim@gmail.com", coder.encriptarContrasenya("123123"), null, talleres = mutableSetOf(taller))
+        var taller =
+            Taller("123123", "xd", Direccion("s", 1, 1, "d"), contrasenya = coder.encriptarContrasenya("123123"))
+        val clientepr = Cliente(
+            "x123123",
+            "Naim",
+            "naim@gmail.com",
+            coder.encriptarContrasenya("123123"),
+            null,
+            talleres = setOf(taller)
+        )
+        val clientepr2 = Cliente(
+            "4",
+            "Naim",
+            "naim@gmail.com",
+            coder.encriptarContrasenya("123123"),
+            null
+        )
         gestor.insertCliente(clientepr)
+        gestor.insertCliente(clientepr2)
 
         gestor.insertTaller(taller)
-        var pedido = Pedido(taller, clientepr, "mantecado")
+        val pedido = Pedido(null, clientepr, "mantecado")
         gestor.insertPedido(pedido)
 
         //PRUEBAS
@@ -24,7 +40,8 @@ class Gui {
             println("Selecciona una opción:")
             println("1. Loguearse como cliente")
             println("2. Loguearse como taller")
-            println("3. Salir")
+            println("3. Registrarse como Cliente o Taller")
+            println("4. Salir")
 
             var opcion = 0
             while (opcion == 0) {
@@ -38,9 +55,9 @@ class Gui {
 
             when (opcion) {
                 1 -> {
-                    var dni = "x"
-                    var contraseya = "x"
-                    while (contraseya == "x") {
+                    var dni: String? = null
+                    var contraseya: String? = null
+                    while (contraseya == null) {
                         println("Menu de inicio de sesión")
                         println("Ingresa tu DNI:")
                         dni = readln()
@@ -54,13 +71,21 @@ class Gui {
                     if (dni == "menu" || contraseya == "menu") {
                         println("Volviendo al Menu...")
                     } else {
-                        var cliente = Cliente("df", "df", "df", "df", null, null)
+
                         try {
-                            cliente = gestor.selectClienteByDni(dni)
-                            if (coder.encriptarContrasenya(contraseya) == cliente.contrasenya) {
-                                clienteInterfaz(dni)
-                            } else {
-                                println("Contraseña incorrecta")
+
+                            val cliente = dni?.let { gestor.selectClienteByDni(it) }
+                            if (cliente != null) {
+
+                                if (contraseya?.let { coder.encriptarContrasenya(it) } == cliente.contrasenya) {
+                                    if (dni != null) {
+                                        println("w2")
+                                        clienteInterfaz(dni)
+                                    }
+
+                                } else {
+                                    println("Contraseña incorrecta")
+                                }
                             }
 
                         } catch (e: Exception) {
@@ -77,20 +102,106 @@ class Gui {
                         println("Introduzca el CIF de la empresa")
                         val cif = readln()
 
-                        val taller = gestor.selectTallerByCIF(cif)
-                        println(taller.nombre)
-                        talleresInterfaz(cif)
-                    }catch (e:Exception){
-                        println("No existe una Empresa con ese cif")
+                        println("Introduzca la contraseña de la empresa")
+                        val contraseya = readln()
+
+                        val taller = gestor.selectTallerByCif(cif)
+                        if (taller != null) {
+                            if (coder.encriptarContrasenya(contraseya) == taller.contrasenya) talleresInterfaz(cif)
+                        }
+
+
+                    } catch (e: Exception) {
+                        println("No existe una Empresa con esa informacion")
                     }
                 }
                 3 -> {
+                    println("Menu de registro")
+                    try {
+                        println("1. Registrarse como cliente")
+                        println("2. Registrarse como Taller")
+                        var opcion2 = 0
+                        while (opcion2 == 0) {
+                            try {
+                                opcion2 = readln().toInt()
+                            } catch (e: Exception) {
+                                opcion2 = 0
+                                println("Caracter invalidos, introduzca un numero del 1 al 3")
+                            }
+                        }
+                        when (opcion2) {
+                            1 -> registroCliente()
+                            2 -> registroTaller()
+                        }
+                    } catch (e: Exception) {
+                        println("Error al realizar el registro")
+                    }
+                }
+                4 -> {
                     println("Saliendo...")
                     gestor.close()
                 }
                 else -> println("Opción inválida.")
             }
         }
+    }
+
+    private fun registroTaller() {
+        try {
+            println("Bienvenido al sistema de registro")
+            println("Nombre: ")
+            val nombre = readln()
+            println("CIF: ")
+            val cif = readln()
+            println("Contraseña: ")
+            val contra = coder.encriptarContrasenya(readln())
+            println("Sistema de gestion de direcciones")
+            println("Calle: ")
+            val calle = readln()
+            println("Numero: ")
+            val numero = readln().toShort()
+            println("Codigo postal: ")
+            val cp = readln().toShort()
+            println("Ciudad: ")
+            val ciudad = readln()
+
+
+            gestor.insertTaller(Taller(cif,nombre, contrasenya = contra, direccion = Direccion(calle, numero, cp, ciudad)))
+        }catch (e: Exception){
+            println("Error en la entrada, no ponga caracteres no numericos en NUMERO Y CODIGOPOSTAL")
+            registroTaller()
+        }
+    }
+
+    private fun registroCliente() {
+        try {
+            println("Bienvenido al sistema de registro")
+            println("Nombre: ")
+            val nombre = readln()
+            println("DNI: ")
+            val dni = readln()
+            println("email: ")
+            val email = readln()
+
+            println("Contraseña")
+            val contra = coder.encriptarContrasenya(readln())
+            println("Sistema de gestion de direcciones")
+            println("Calle: ")
+            val calle = readln()
+            println("Numero: ")
+            val numero = readln().toShort()
+            println("Codigo postal: ")
+            val cp = readln().toShort()
+            println("Ciudad: ")
+            val ciudad = readln()
+
+            gestor.insertCliente(Cliente(dni, nombre, email, contra, Direccion(calle, numero, cp, ciudad)))
+
+        }catch (e: Exception){
+            println("Error en la entrada, no ponga caracteres no numericos en NUMERO Y CODIGOPOSTAL")
+            registroCliente()
+        }
+
     }
 
     fun login() {
@@ -145,12 +256,12 @@ class Gui {
         }
     }
 
-    private fun showWorkshops(dni : String) {
+    private fun showWorkshops(dni: String) {
         try {
             val tallers = gestor.talleresCliente(dni)
             println("Tu lista de Talleres: ")
             tallers.forEach { println(it.nombre) }
-        }catch (e : Exception){
+        } catch (e: Exception) {
             println("Tu lista de Talleres esta vacia. :C")
         }
 
@@ -162,30 +273,32 @@ class Gui {
             println("Tu lista de pedidos: ")
             pedidos.forEach { println(mapOf(Pair(it.id, it.descripcion))) }
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             println("Tu lista de pedidos esta vacia :C")
         }
 
     }
 
-    private fun showAssociatedOrders(cif: String){
+    private fun showAssociatedOrders(cif: String) {
         println("Su lista de pedidos asociados: ")
         try {
             val pedidosAs = gestor.pedidosAsociados(cif)
-            pedidosAs.forEach{ println(it)}
-        }catch (e: Exception){
+            pedidosAs.forEach { println(it) }
+        } catch (e: Exception) {
             println("Su lista de pedidos esta vacia :C")
         }
 
     }
 
-    private fun showAssociatedClients(cif: String){
+    private fun showAssociatedClients(cif: String) {
         println("Su lista de clientes asociados: ")
         try {
             val pedidosAs = gestor.clientesAsociados(cif)
-            pedidosAs.forEach{ println(it)}
-            if (pedidosAs.isEmpty()){println("Su lista de clientes esta vacia :C")}
-        }catch (e: Exception){
+            pedidosAs.forEach { println(it) }
+            if (pedidosAs.isEmpty()) {
+                println("Su lista de clientes esta vacia :C")
+            }
+        } catch (e: Exception) {
             println("Su lista de clientes esta vacia :C")
         }
 
@@ -197,7 +310,8 @@ class Gui {
             println("Menu Taller")
             println("1. Mostrar pedidos asociados")
             println("2. Mostrar clientes asociados")
-            println("3. Cerrar Sesion")
+            println("3. Mostrar pedidos sin asociar")
+            println("4. Cerrar Sesion")
             println("Ingresa tu opción:")
 
             var opcion = 0
@@ -212,7 +326,8 @@ class Gui {
             when (opcion) {
                 1 -> showAssociatedOrders(cif)
                 2 -> showAssociatedClients(cif)
-                3 -> break
+                3 -> showNotAssociatedOrders(cif)
+                4 -> break
                 else -> {
                     println("Opción inválida, intente de nuevo.")
                 }
@@ -220,6 +335,36 @@ class Gui {
         }
         println("Saliendo del sistema...")
 
+    }
+
+    private fun showNotAssociatedOrders(cif: String) {
+        try {
+            val taller = gestor.selectTallerByCif(cif)
+            val pedidosNotAssociated = gestor.selectAllPedidosSinTaller()
+            pedidosNotAssociated?.forEach { println(mapOf(Pair(it.id, it.descripcion))) }
+
+            if (!pedidosNotAssociated.isNullOrEmpty()) {
+                println("¿Desea asociarse un pedido? Y/N")
+                val respuesta = readln().toUpperCase()
+                if (respuesta == "Y" || respuesta == "YES") {
+                    println("Ponga el ID del Pedido que desea.")
+                    val id = readln().toInt()
+                    try {
+                        for (element in pedidosNotAssociated) {
+                            if (element.id == id) {
+
+                                element.taller = taller
+                                gestor.insertPedido(element)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        println("Error al apropiarse del Pedido.")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            println("En este momento no hay pedidos sin asociar.")
+        }
     }
 
 

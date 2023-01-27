@@ -39,11 +39,22 @@ class GestorBBDD {
         }
     }
     fun selectAllClientes():List<Cliente> = manager.createQuery("from Cliente")?.resultList as List<Cliente>
-    fun selectClienteByDni(dni: String):Cliente = manager.createQuery("from Cliente where dni=dni")?.singleResult as Cliente
-    fun selectTallerByCIF(cif: String):Taller = manager.createQuery("from Taller where cif=cif")?.singleResult as Taller
+    fun selectClienteByDni(dni: String): Cliente {
+        val query = manager.createQuery("from Cliente where dni = :dni", Cliente::class.java)
+        query.setParameter("dni", dni)
+        return query.singleResult
+    }
+    fun selectTallerByCif(cif: String): Taller? {
+        val query = manager.createQuery("from Taller where cif = :cif", Taller::class.java)
+        query.setParameter("cif", cif)
+        return query.singleResult
+    }
     fun selectAllTalleres():List<Taller> = manager.createQuery("from Taller")?.resultList as List<Taller>
     fun selectAllPedidos(): List<Pedido>? = manager.createQuery("from Pedido")?.resultList as List<Pedido>?
     fun selectAllPedidosSinTaller(): List<Pedido>? = manager.createQuery("from Pedido where taller=null")?.resultList as List<Pedido>
+
+
+
     fun pedidosAsociados(cif: String): MutableList<Pedido> {
         val listaPedidos: MutableList<Pedido> = mutableListOf()
         selectAllPedidos()?.forEach {

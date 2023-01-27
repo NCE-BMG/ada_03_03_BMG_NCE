@@ -1,8 +1,13 @@
 import jakarta.persistence.EntityManager
 import jakarta.persistence.Persistence
 fun main() {
-    val gui = Gui()
-    gui.init()
+    try {
+        val gui = Gui()
+        gui.init()
+    }catch (e: Exception){
+        println("Error en la conexion")
+    }
+
 
 
 }

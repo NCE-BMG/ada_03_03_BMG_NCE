@@ -3,7 +3,7 @@ import jakarta.persistence.Persistence
 
 class GestorBBDD {
 
-    private val manager: EntityManager =
+    private val manager: EntityManager=
         Persistence.createEntityManagerFactory("PersistenciaCliente").createEntityManager()
 
     fun insertCliente(cliente: Cliente): Boolean {
